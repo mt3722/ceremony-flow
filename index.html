@@ -1,150 +1,386 @@
+<!-- 版本：2025-06-22 v03 -->
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>竹山念佛會 2025-06-19 週四共修法會細流</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <title>竹山念佛會 法會細流</title>
+
   <style>
-    /* 基礎重置與排版 */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      /* ===== 整體 ===== */
+      --scale: 0.64;
+      --table-width: 800px;
+
+      /* 邊距與線條 */
+      --cell-padding: 8px;
+      --outer-border-width: 3px;
+      --inner-border-width: 1px;
+      --border-color: #ccc;
+
+      /* 色彩 */
+      --header-bg: #f0f0f0;
+      --row-odd-bg: #ffffff;
+      --row-even-bg: #fafafa;
+
+      /* 欄寬 */
+      --time-col-width: 90px;
+      --role-col-width: 130px;
+      --content-col-width: 640px;
+
+      /* 字體大小 */
+      --title-font-size: 32px;
+      --header-font-size: 22px;
+      --time-font-size: 20px;
+      --role-font-size: 20px;
+      --content-font-size: 20px;
+
+      /* 欄位偏移量 */
+      --time-offset-x: 9px;   --time-offset-y: 0px;
+      --role-offset-x: 0px;   --role-offset-y: 0px;
+      --content-offset-x: 0px;--content-offset-y: 0px;
     }
+
+    /* ===== 基礎樣式 ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      line-height: 1.6;
-      color: #333;
+      font-family: "Microsoft JhengHei","Noto Sans TC",sans-serif;
+      background: #f9f9f9; color: #333;
       padding: 16px;
-      background: #f9f9f9;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    #toggleBtn {
+      margin-bottom: 16px; padding: 6px 12px;
+      border: 1px solid #333; background: #fff;
+      cursor: pointer;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 24px;
+    /* ===== 控制面板 ===== */
+    .controls {
+      width: 90%; max-width: 760px;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease, margin .3s ease;
+      max-height: 0; padding: 0; margin-bottom: 0; border: none;
     }
-    header h1 {
-      font-size: 24px;
-      font-weight: 600;
+    .controls.expanded {
+      border: 1px solid #333;
+      padding: 16px; margin-bottom: 32px;
+      max-height: 2200px;
+    }
+    .controls h4 {
+      text-align: center; margin-bottom: 12px; font-size: 1.05em;
+    }
+    .control-group {
+      display: flex; align-items: center; margin: 6px 0; flex-wrap: wrap;
+    }
+    .control-group label  { flex: 1 1 200px; font-size: .9em; }
+    .control-group input[type=range] { flex: 2 1 220px; margin: 0 8px; }
+    .control-group .value { width: 56px; text-align: right; }
+
+    /* ===== 表格區 ===== */
+    #wrapper { transform-origin: top center; transform: scale(var(--scale)); }
+
+    .table-container {
+      width: var(--table-width);
+      background: #fff; border-radius: 4px;
+      overflow: hidden;
+      border: var(--outer-border-width) solid var(--border-color);
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+    .table-container h3 {
+      margin: 0; padding: 12px;
+      font-size: var(--title-font-size);
+      text-align: center;
+      border-bottom: var(--inner-border-width) solid var(--border-color);
     }
 
-    /* Schedule Table */
-    .schedule {
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto 32px;
-      background: #fff;
-      border-collapse: collapse;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .schedule caption {
-      caption-side: top;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-      padding: 12px 0;
-    }
-    .schedule th,
-    .schedule td {
-      border: 1px solid #ddd;
-      padding: 8px 12px;
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      border: var(--inner-border-width) solid var(--border-color);
+      padding: var(--cell-padding);
       text-align: left;
     }
-    .schedule th {
-      font-size: 18px;
-      background: #f0f0f0;
-    }
-    .schedule td {
-      font-size: 16px;
-    }
-    /* 時間欄固定寬度 */
-    .schedule th.time,
-    .schedule td.time {
-      width: 80px;
+    th { background: var(--header-bg); font-size: var(--header-font-size); }
+    tr:nth-child(odd)  td { background: var(--row-odd-bg); }
+    tr:nth-child(even) td { background: var(--row-even-bg); }
+
+    td.time {
+      width: var(--time-col-width);
+      font-size: var(--time-font-size);
+      font-weight: bold;
+      transform: translate(var(--time-offset-x), var(--time-offset-y));
       white-space: nowrap;
     }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      font-size: 14px;
-      color: #666;
-      margin-top: 32px;
+    td.role {
+      width: var(--role-col-width);
+      font-size: var(--role-font-size);
+      transform: translate(var(--role-offset-x), var(--role-offset-y));
+    }
+    td.content {
+      width: var(--content-col-width);
+      font-size: var(--content-font-size);
+      transform: translate(var(--content-offset-x), var(--content-offset-y));
     }
 
-    /* 響應式（手機）*/
     @media (max-width: 600px) {
-      header h1 {
-        font-size: 20px;
-      }
-      .schedule th,
-      .schedule td {
-        font-size: 14px;
-        padding: 6px 8px;
-      }
-      .schedule {
-        box-shadow: none;
-      }
+      .table-container { width: 100%; box-shadow: none; }
+      .table-container h3 { font-size: calc(var(--title-font-size) * .9); }
+      th, td { padding: calc(var(--cell-padding) * .8); }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>竹山念佛會 2025-06-19 週四共修法會細流</h1>
-  </header>
 
-  <main>
-    <section class="schedule" aria-labelledby="schedule-caption">
+  <!-- ===== 面板開關 ===== -->
+  <button id="toggleBtn">顯示控制面板 ▼</button>
+
+  <!-- ===== 控制面板 ===== -->
+  <div class="controls" id="controls">
+    <h4>🛠️ 表格版面可調參數</h4>
+
+    <!-- 整體 -->
+    <div class="control-group">
+      <label for="scaleSlider">整體縮放</label>
+      <input id="scaleSlider" type="range" min="50" max="200" value="100">
+      <div class="value"><span id="scaleVal">64</span>%</div>
+    </div>
+    <div class="control-group">
+      <label for="tableWidthSlider">整體表格寬</label>
+      <input id="tableWidthSlider" type="range" min="300" max="1200" value="800">
+      <div class="value"><span id="tableWidthVal">800</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="outerBorderSlider">表格外框粗細</label>
+      <input id="outerBorderSlider" type="range" min="0" max="10" value="3">
+      <div class="value"><span id="outerBorderVal">3</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="innerBorderSlider">表格內線粗細</label>
+      <input id="innerBorderSlider" type="range" min="0" max="10" value="1">
+      <div class="value"><span id="innerBorderVal">1</span>px</div>
+    </div>
+
+    <!-- 欄寬 -->
+    <div class="control-group">
+      <label for="timeWidthSlider">時間欄寬</label>
+      <input id="timeWidthSlider" type="range" min="80" max="300" value="90">
+      <div class="value"><span id="timeWidthVal">90</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="roleWidthSlider">職稱欄寬</label>
+      <input id="roleWidthSlider" type="range" min="100" max="400" value="130">
+      <div class="value"><span id="roleWidthVal">130</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="contentWidthSlider">內容欄寬</label>
+      <input id="contentWidthSlider" type="range" min="200" max="800" value="640">
+      <div class="value"><span id="contentWidthVal">640</span>px</div>
+    </div>
+
+    <!-- 字體大小 -->
+    <div class="control-group">
+      <label for="titleSlider">主標題字體</label>
+      <input id="titleSlider" type="range" min="14" max="100" value="32">
+      <div class="value"><span id="titleVal">32</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="headerFontSlider">表頭字體</label>
+      <input id="headerFontSlider" type="range" min="12" max="30" value="22">
+      <div class="value"><span id="headerFontVal">22</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="timeFontSlider">時間欄字體</label>
+      <input id="timeFontSlider" type="range" min="12" max="30" value="20">
+      <div class="value"><span id="timeFontVal">20</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="roleFontSlider">職稱欄字體</label>
+      <input id="roleFontSlider" type="range" min="12" max="30" value="20">
+      <div class="value"><span id="roleFontVal">20</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="contentFontSlider">內容欄字體</label>
+      <input id="contentFontSlider" type="range" min="12" max="30" value="20">
+      <div class="value"><span id="contentFontVal">20</span>px</div>
+    </div>
+
+    <!-- 偏移量：時間 -->
+    <div class="control-group">
+      <label for="timeOffsetXSlider">時間欄 X 偏移</label>
+      <input id="timeOffsetXSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="timeOffsetXVal">9</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="timeOffsetYSlider">時間欄 Y 偏移</label>
+      <input id="timeOffsetYSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="timeOffsetYVal">0</span>px</div>
+    </div>
+
+    <!-- 偏移量：職稱 -->
+    <div class="control-group">
+      <label for="roleOffsetXSlider">職稱欄 X 偏移</label>
+      <input id="roleOffsetXSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="roleOffsetXVal">0</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="roleOffsetYSlider">職稱欄 Y 偏移</label>
+      <input id="roleOffsetYSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="roleOffsetYVal">0</span>px</div>
+    </div>
+
+    <!-- 偏移量：內容 -->
+    <div class="control-group">
+      <label for="contentOffsetXSlider">內容欄 X 偏移</label>
+      <input id="contentOffsetXSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="contentOffsetXVal">0</span>px</div>
+    </div>
+    <div class="control-group">
+      <label for="contentOffsetYSlider">內容欄 Y 偏移</label>
+      <input id="contentOffsetYSlider" type="range" min="-50" max="50" value="0">
+      <div class="value"><span id="contentOffsetYVal">0</span>px</div>
+    </div>
+
+    <!-- 導出按鈕 -->
+    <div class="control-group" style="justify-content:center;margin-top:14px;">
+      <button id="exportBtn" style="padding:6px 20px;cursor:pointer;">導出參數</button>
+    </div>
+  </div>
+
+  <!-- ===== 表格 ===== -->
+  <div id="wrapper">
+    <div class="table-container">
+      <h3>週四共修法會細流</h3>
       <table>
-        <caption id="schedule-caption">週四共修法會細流</caption>
         <thead>
           <tr>
-            <th scope="col" class="time">時間</th>
-            <th scope="col">項目／備註</th>
+            <th class="time">時間</th>
+            <th class="role">職稱</th>
+            <th class="content">內容</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="time">08:30<br />(法會前30分鐘)</td>
-            <td>
-              所有執事：報到、就位<br />
-              迎賓：入口迎賓<br />
-              知賓：引導來賓入座，避免穿堂<br />
-              護法、舉牌：走道兩側維持秩序<br />
-              悅眾：穿海青，分東、西單最後一排就座<br />
-              司儀、引禮：第一排就座
-            </td>
-          </tr>
-          <tr>
-            <td class="time">08:45<br />(法會前15分鐘)</td>
-            <td>
-              悅眾：一同起立入壇，三問訊後坐下<br />
-              知賓：確認今日上香人員
-            </td>
-          </tr>
-          <tr>
-            <td class="time">08:50<br />(法會前10分鐘)</td>
-            <td>
-              維那：佛號剎板<br />
-              司儀：致歡迎詞，視情況宣達事項
-            </td>
-          </tr>
-          <tr>
-            <td class="time">08:55<br />(法會前5分鐘)</td>
-            <td>舉牌：最後一次舉牌宣導</td>
-          </tr>
-        </tbody>
+        <tbody id="scheduleBody"></tbody>
       </table>
-    </section>
-  </main>
+    </div>
+  </div>
 
-  <footer>
-    聯絡方式：竹山念佛會 • © 2025
-  </footer>
+  <script>
+    /* ========== 面板收合 ========= */
+    const btn = document.getElementById('toggleBtn');
+    const ctrl = document.getElementById('controls');
+    btn.onclick = () => {
+      const open = ctrl.classList.toggle('expanded');
+      btn.textContent = open ? '隱藏控制面板 ▲' : '顯示控制面板 ▼';
+    };
+
+    /* ========== 綁定滑桿到 CSS 變數 ========= */
+    function bind(id, variable, suffix = '') {
+      const slider = document.getElementById(id);
+      const value  = document.getElementById(id.replace('Slider', 'Val'));
+      const update = () => {
+        const v = slider.value;
+        const cssVal = variable === '--scale' ? v / 100 : v + suffix;
+        document.documentElement.style.setProperty(variable, cssVal);
+        value.textContent = v;
+      };
+      slider.addEventListener('input', update);
+      update(); // 初始
+    }
+
+    /* 整體、線條 */
+    bind('scaleSlider',        '--scale');
+    bind('tableWidthSlider',   '--table-width',        'px');
+    bind('outerBorderSlider',  '--outer-border-width', 'px');
+    bind('innerBorderSlider',  '--inner-border-width', 'px');
+
+    /* 欄寬 */
+    bind('timeWidthSlider',    '--time-col-width',     'px');
+    bind('roleWidthSlider',    '--role-col-width',     'px');
+    bind('contentWidthSlider', '--content-col-width',  'px');
+
+    /* 字體 */
+    bind('titleSlider',        '--title-font-size',    'px');
+    bind('headerFontSlider',   '--header-font-size',   'px');
+    bind('timeFontSlider',     '--time-font-size',     'px');
+    bind('roleFontSlider',     '--role-font-size',     'px');
+    bind('contentFontSlider',  '--content-font-size',  'px');
+
+    /* 偏移量 */
+    bind('timeOffsetXSlider',     '--time-offset-x',    'px');
+    bind('timeOffsetYSlider',     '--time-offset-y',    'px');
+    bind('roleOffsetXSlider',     '--role-offset-x',    'px');
+    bind('roleOffsetYSlider',     '--role-offset-y',    'px');
+    bind('contentOffsetXSlider',  '--content-offset-x', 'px');
+    bind('contentOffsetYSlider',  '--content-offset-y', 'px');
+
+    /* ========== 產生表格 ========= */
+    fetch('schedule.json')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.getElementById('scheduleBody');
+        data.forEach(group => {
+          group.items.forEach((it, idx) => {
+            const tr = document.createElement('tr');
+
+            /* 時間欄只出現一次並 rowspan */
+            if (idx === 0) {
+              const tdTime = document.createElement('td');
+              tdTime.className = 'time';
+              tdTime.rowSpan   = group.items.length;
+              tdTime.textContent = group.time;
+              tr.appendChild(tdTime);
+            }
+
+            const tdRole = document.createElement('td');
+            tdRole.className = 'role';
+            tdRole.textContent = it.role;
+            tr.appendChild(tdRole);
+
+            const tdContent = document.createElement('td');
+            tdContent.className = 'content';
+            tdContent.textContent = it.content;
+            tr.appendChild(tdContent);
+
+            tbody.appendChild(tr);
+          });
+        });
+      })
+      .catch(err => console.error('讀取 schedule.json 失敗：', err));
+
+    /* ========== 導出參數 ========= */
+    document.getElementById('exportBtn').onclick = () => {
+      /* 所有變數名稱 */
+      const vars = [
+        '--scale','--table-width','--outer-border-width','--inner-border-width',
+        '--time-col-width','--role-col-width','--content-col-width',
+        '--title-font-size','--header-font-size','--time-font-size',
+        '--role-font-size','--content-font-size',
+        '--time-offset-x','--time-offset-y',
+        '--role-offset-x','--role-offset-y',
+        '--content-offset-x','--content-offset-y'
+      ];
+
+      const styles = getComputedStyle(document.documentElement);
+      const obj = {};
+      vars.forEach(v => { obj[v] = styles.getPropertyValue(v).trim(); });
+
+      const json = JSON.stringify(obj, null, 2);
+
+      /* 複製到剪貼簿 */
+      navigator.clipboard.writeText(json).then(
+        () => alert('參數已複製到剪貼簿！'),
+        () => alert('複製失敗，請手動複製')
+      );
+
+      /* 下載檔案 */
+      const blob = new Blob([json], {type: 'application/json'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = 'schedule-settings.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  </script>
 </body>
 </html>
